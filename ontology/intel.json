@@ -1,0 +1,131 @@
+{
+  "name": "intel-core",
+  "description": "Multi-domain intelligence ontology: who exists, what they control, and how they interact.",
+
+  "entities": {
+    "person": {
+      "label": "Person",
+      "icon": "P",
+      "match_threshold": 9.0,
+      "review_threshold": 4.5,
+      "properties": {
+        "full_name":   { "kind": "name",    "m_prob": 0.92, "u_prob": 0.030,    "threshold": 0.88, "display": true },
+        "dob":         { "kind": "date",    "m_prob": 0.88, "u_prob": 0.0008,   "threshold": 0.90, "display": true },
+        "national_id": { "kind": "id",      "m_prob": 0.98, "u_prob": 0.000001, "threshold": 1.00, "display": true },
+        "email":       { "kind": "email",   "m_prob": 0.75, "u_prob": 0.0001,   "threshold": 1.00, "multi": true, "display": true },
+        "phone":       { "kind": "phone",   "m_prob": 0.70, "u_prob": 0.0002,   "threshold": 1.00, "multi": true, "display": true },
+        "address":     { "kind": "address", "m_prob": 0.60, "u_prob": 0.0020,   "threshold": 0.70 },
+        "nationality": { "kind": "text",    "m_prob": 0.95, "u_prob": 0.080,    "threshold": 0.95 },
+        "occupation":  { "kind": "text",    "m_prob": 0.70, "u_prob": 0.050,    "threshold": 0.85 }
+      },
+      "blocking": [
+        { "name": "name_phon",  "properties": ["full_name"],   "strategy": "soundex" },
+        { "name": "name_pre",   "properties": ["full_name"],   "strategy": "sorted_tokens", "length": 6 },
+        { "name": "dob",        "properties": ["dob"],         "strategy": "exact" },
+        { "name": "email",      "properties": ["email"],       "strategy": "exact" },
+        { "name": "phone",      "properties": ["phone"],       "strategy": "exact" },
+        { "name": "natid",      "properties": ["national_id"], "strategy": "exact" }
+      ]
+    },
+
+    "organization": {
+      "label": "Organization",
+      "icon": "O",
+      "match_threshold": 9.0,
+      "review_threshold": 4.5,
+      "properties": {
+        "legal_name":   { "kind": "org",     "m_prob": 0.90, "u_prob": 0.0040,   "threshold": 0.88, "disagree_below": 0.85, "display": true },
+        "reg_number":   { "kind": "id",      "m_prob": 0.97, "u_prob": 0.000001, "threshold": 1.00, "display": true },
+        "country":      { "kind": "text",    "m_prob": 0.95, "u_prob": 0.150,    "threshold": 0.95, "display": true },
+        "address":      { "kind": "address", "m_prob": 0.65, "u_prob": 0.0030,   "threshold": 0.70, "display": true },
+        "incorporated": { "kind": "date",    "m_prob": 0.90, "u_prob": 0.0010,   "threshold": 0.90 },
+        "sector":       { "kind": "text",    "m_prob": 0.80, "u_prob": 0.100,    "threshold": 0.90, "display": true }
+      },
+      "blocking": [
+        { "name": "name_phon", "properties": ["legal_name"], "strategy": "soundex" },
+        { "name": "name_pre",  "properties": ["legal_name"], "strategy": "prefix", "length": 6 },
+        { "name": "reg",       "properties": ["reg_number"], "strategy": "exact" }
+      ]
+    },
+
+    "account": {
+      "label": "Account",
+      "icon": "A",
+      "match_threshold": 9.0,
+      "review_threshold": 5.0,
+      "properties": {
+        "account_number": { "kind": "id",   "m_prob": 0.99, "u_prob": 0.0000001, "threshold": 1.00, "display": true },
+        "iban":           { "kind": "id",   "m_prob": 0.95, "u_prob": 0.0000001, "threshold": 1.00, "display": true },
+        "institution":    { "kind": "org",  "m_prob": 0.95, "u_prob": 0.0500,    "threshold": 0.90, "display": true },
+        "currency":       { "kind": "text", "m_prob": 0.98, "u_prob": 0.2500,    "threshold": 1.00, "display": true },
+        "opened":         { "kind": "date", "m_prob": 0.90, "u_prob": 0.0010,    "threshold": 0.90 }
+      },
+      "blocking": [
+        { "name": "acct", "properties": ["account_number"], "strategy": "exact" },
+        { "name": "iban", "properties": ["iban"],           "strategy": "exact" }
+      ]
+    },
+
+    "location": {
+      "label": "Location",
+      "icon": "L",
+      "match_threshold": 8.0,
+      "review_threshold": 4.0,
+      "properties": {
+        "address":  { "kind": "address", "m_prob": 0.85, "u_prob": 0.0050, "threshold": 0.75, "display": true },
+        "city":     { "kind": "text",    "m_prob": 0.95, "u_prob": 0.0300, "threshold": 0.90, "display": true },
+        "country":  { "kind": "text",    "m_prob": 0.97, "u_prob": 0.1000, "threshold": 0.95, "display": true },
+        "postcode": { "kind": "id",      "m_prob": 0.90, "u_prob": 0.0020, "threshold": 1.00, "display": true }
+      },
+      "blocking": [
+        { "name": "post", "properties": ["postcode"], "strategy": "exact" },
+        { "name": "addr", "properties": ["address"],  "strategy": "sorted_tokens", "length": 8 }
+      ]
+    }
+  },
+
+  "links": {
+    "employed_by": {
+      "source": "person", "target": "organization", "label": "employed by", "weight": 0.6,
+      "properties": { "role": { "kind": "text" }, "since": { "kind": "date" } }
+    },
+    "officer_of": {
+      "source": "person", "target": "organization", "label": "officer of", "weight": 1.4,
+      "properties": { "role": { "kind": "text" }, "since": { "kind": "date" } }
+    },
+    "owns_account": {
+      "source": "person", "target": "account", "label": "owns account", "weight": 1.5
+    },
+    "controls_account": {
+      "source": "organization", "target": "account", "label": "controls account", "weight": 1.5
+    },
+    "transacted": {
+      "source": "account", "target": "account", "label": "transacted with", "weight": 1.0,
+      "properties": {
+        "amount": { "kind": "number" },
+        "currency": { "kind": "text" },
+        "date": { "kind": "date" },
+        "reference": { "kind": "text" }
+      }
+    },
+    "communicated": {
+      "source": "person", "target": "person", "label": "communicated with",
+      "symmetric": true, "weight": 0.9,
+      "properties": { "channel": { "kind": "text" }, "date": { "kind": "date" } }
+    },
+    "associate_of": {
+      "source": "person", "target": "person", "label": "associate of",
+      "symmetric": true, "weight": 1.1
+    },
+    "owns_stake": {
+      "source": "organization", "target": "organization", "label": "owns stake in", "weight": 1.6,
+      "properties": { "percent": { "kind": "number" } }
+    },
+    "resides_at": {
+      "source": "person", "target": "location", "label": "resides at", "weight": 0.8
+    },
+    "registered_at": {
+      "source": "organization", "target": "location", "label": "registered at", "weight": 1.2
+    }
+  }
+}

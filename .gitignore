@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Generated corpus and run artifacts — regenerate with `python3 -m argus generate`
+data/
+artifacts/
